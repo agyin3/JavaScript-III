@@ -64,7 +64,102 @@ Humanoid.prototype = Object.create(CharacterStats.prototype);
 Humanoid.prototype.greet = function() {
   return `${this.name} offers a greeting in ${this.language}.`;
 }
+
+// Hero 
+
+function Hero(heroAttrs) {
+  Humanoid.call(this, heroAttrs);
+  this.strength = function(){
+    return Math.floor(Math.random() * 10);
+  }
+  this.defense = function(){
+    return Math.floor(Math.random() * 10);
+  }
+}
+
+Hero.prototype = Object.create(Humanoid.prototype);
+
+// Villian
  
+function Villian(villainAttrs) {
+  Humanoid.call(this, villainAttrs);
+  this.power = function(){
+    return Math.floor(Math.random() * 10);
+  }
+  this.defense = function() {
+    return Math.floor(Math.random() * 10);
+  };
+}
+
+Villian.prototype = Object.create(Humanoid.prototype);
+
+// Fight Function 
+
+function fight(hero, villian) {
+  let heroDefense = hero.defense;
+  let villianDefense = villian.defense;
+  let heroAttack = hero.strength;
+  let villainAttack = villian.power;
+  let heroHealth = hero.healthPoints;
+  let villianHealth = villian.healthPoints;
+  let villianName = villian.name;
+  let heroName = hero.name;
+
+  let first = Math.floor(Math.random() * 2); 
+  let heroDefend = heroDefense();
+  let villianPower = villainAttack();
+  let heroPower = heroAttack();
+  let villianDefend = villianDefense();
+
+
+  // Fight Logic
+
+
+  while(heroHealth > 0 && villianHealth > 0) {
+    if(first == 0) {
+      if(villianPower > heroDefend) {
+        heroHealth -= villianPower;
+        console.log(`${villianName} did ${villianPower} damage to ${heroName}`);
+        if(heroHealth <= 0) {
+          return console.log(hero.destroy());
+        }else {
+        console.log(`${heroName} has ${heroHealth} health left`);
+        heroPower = heroAttack();
+        villianDefend = villianDefense();
+        first = 1;
+      }
+      }else if(heroDefend >= villianPower) {
+        console.log(`${villianName} tried to attack but ${heroName} blocked the move.`);
+        console.log(`${heroName} has ${heroHealth} health left`);
+        heroPower = heroAttack();
+        villianDefend = villianDefense();
+        first = 1;
+      }
+    }else {
+      if(heroPower > villianDefend) {
+        villianHealth -= heroPower;
+        console.log(`${heroName} did ${heroPower} damage to ${villianName}`);
+        if(villianHealth <= 0) {
+          return console.log(villian.destroy());
+        }else{
+        console.log(`${villianName} has ${villianHealth} health left`);
+        heroDefend = heroDefense();
+        villianPower = villainAttack();
+        first = 0;
+      }
+      }else if(villianDefend >= heroPower) {
+        console.log(`${heroName} tried to attack but ${villianName} blocked the move.`);
+        console.log(`${villianName} has ${villianHealth} health left`);
+        heroDefend = heroDefense();
+        villianPower = villainAttack();
+        first = 0;
+      }
+    }
+  }
+}
+
+// Hero Attack 
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -124,16 +219,53 @@ Humanoid.prototype.greet = function() {
     language: 'Elvish',
   });
 
-  console.log(mage.createdAt); // Today's date
-  console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
-  console.log(swordsman.healthPoints); // 15
-  console.log(mage.name); // Bruce
-  console.log(swordsman.team); // The Round Table
-  console.log(mage.weapons); // Staff of Shamalama
-  console.log(archer.language); // Elvish
-  console.log(archer.greet()); // Lilith offers a greeting in Elvish.
-  console.log(mage.takeDamage()); // Bruce took damage.
-  console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
+  const kobe = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 4,
+    },
+    healthPoints: 30,
+    name: 'Kobe Bryant',
+    team: 'LA Lakers',
+    weapons: [
+      'Bow',
+      'Dagger',
+    ],
+    language: 'Elvish',
+  });
+
+  const lebron = new Villian({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 4,
+    },
+    healthPoints: 30,
+    name: 'Lebron James',
+    team: 'Cleveland Cavs',
+    weapons: [
+      'Bow',
+      'Dagger',
+    ],
+    language: 'Elvish',
+  });
+
+  fight(kobe, lebron);
+  
+
+  // console.log(mage.createdAt); // Today's date
+  // console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
+  // console.log(swordsman.healthPoints); // 15
+  // console.log(mage.name); // Bruce
+  // console.log(swordsman.team); // The Round Table
+  // console.log(mage.weapons); // Staff of Shamalama
+  // console.log(archer.language); // Elvish
+  // console.log(archer.greet()); // Lilith offers a greeting in Elvish.
+  // console.log(mage.takeDamage()); // Bruce took damage.
+  // console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
 
 
   // Stretch task: 
